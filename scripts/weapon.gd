@@ -96,7 +96,10 @@ func _fire() -> void:
 			var hit_pos = result.position
 			_spawn_impact(hit_pos, result.normal)
 			if collider and collider.has_method("take_damage"):
-				collider.take_damage(dmg_per, player)
+				if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+					collider.take_damage.rpc_id(1, dmg_per)
+				else:
+					collider.take_damage(dmg_per)
 				if ls > 0 and player:
 					player.heal(dmg_per * ls)
 

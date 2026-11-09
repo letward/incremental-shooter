@@ -155,6 +155,11 @@ func _add_part(name: String, mesh: Mesh, size: Vector3, pos: Vector3, color: Col
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
+	# update health label (all peers)
+	if health_label:
+		health_label.text = "HP %d" % int(health)
+	if not multiplayer.is_server() and multiplayer.has_multiplayer_peer():
+		return
 	if target == null or not is_instance_valid(target):
 		return
 	attack_timer = max(0, attack_timer - delta)
@@ -188,12 +193,14 @@ func _physics_process(delta: float) -> void:
 	if health_label:
 		health_label.text = "HP %d" % int(health)
 
-func take_damage(amount: float, from: Node = null) -> void:
+@rpc("any_peer", "reliable")
+func take_damage(amount: float, from_peer: int = 0) -> void:
+	if not multiplayer.is_server() and multiplayer.has_multiplayer_peer():
+		return
 	if dead:
 		return
 	health -= amount
 	AudioManager.play("hit", -6.0, randf_range(0.9, 1.1))
-	# hit flash
 	_flash_hit()
 	if health_label:
 		health_label.text = "HP %d" % int(health)
@@ -231,9 +238,17 @@ func _flash_hit() -> void:
 func die() -> void:
 	if dead:
 		return
+	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+		return
 	dead = true
-	GameManager.add_kill()
-	GameManager.add_money(money_reward)
+	if multiplayer.has_multiplayer_peer():
+		GameManager.rpc_add_kill()
+	else:
+		GameManager.add_kill()
+	if multiplayer.has_multiplayer_peer():
+		GameManager.rpc_add_money(money_reward)
+	else:
+		GameManager.add_money(money_reward)
 	AudioManager.play("enemy_death", -4.0)
 	AudioManager.play("pickup", -8.0, randf_range(0.9, 1.1))
 	# death burst particles

@@ -32,6 +32,10 @@ func add_money(amount: int) -> void:
 	money += amount
 	money_changed.emit(money)
 
+@rpc("authority", "reliable", "call_local")
+func rpc_add_money(amount: int) -> void:
+	add_money(amount)
+
 func spend_money(amount: int) -> bool:
 	if money >= amount:
 		money -= amount
@@ -42,6 +46,10 @@ func spend_money(amount: int) -> bool:
 func add_kill() -> void:
 	kills += 1
 	kills_changed.emit(kills)
+
+@rpc("authority", "reliable", "call_local")
+func rpc_add_kill() -> void:
+	add_kill()
 
 func set_wave(w: int) -> void:
 	wave = w

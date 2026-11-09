@@ -1,6 +1,7 @@
 extends Control
 
 @onready var start_btn: Button = $Center/VBox/StartBtn
+@onready var multi_btn: Button = $Center/VBox/MultiBtn
 @onready var title1: Label = $Center/VBox/Title1
 @onready var title2: Label = $Center/VBox/Title2
 @onready var crosshair: Control = $Center/VBox/Crosshair
@@ -9,6 +10,7 @@ func _ready() -> void:
 	_style_button()
 	_animate_entrance()
 	start_btn.pressed.connect(_start_game)
+	multi_btn.pressed.connect(_multiplayer)
 	_start_music()
 
 func _start_music() -> void:
@@ -69,3 +71,7 @@ func _start_game() -> void:
 
 func _go_to_game() -> void:
 	get_tree().change_scene_to_file("res://scenes/loadout_select.tscn")
+
+func _multiplayer() -> void:
+	AudioManager.play("ui_click")
+	get_tree().change_scene_to_file("res://scenes/lobby.tscn")

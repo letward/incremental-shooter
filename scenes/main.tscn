@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/level.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/spawner.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="5"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -19,6 +20,7 @@ fog_light_color = Color(0.3, 0.35, 0.45, 1)
 fog_density = 0.008
 
 [node name="Main" type="Node3D"]
+script = ExtResource("5")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1")
@@ -32,8 +34,17 @@ shadow_enabled = true
 [node name="Level" type="Node3D" parent="."]
 script = ExtResource("3")
 
-[node name="Player" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+[node name="Players" type="Node3D" parent="."]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("Players")
+spawn_function = Callable()
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("Enemies")
+spawn_function = Callable()
 
 [node name="Spawner" type="Node3D" parent="."]
 script = ExtResource("4")

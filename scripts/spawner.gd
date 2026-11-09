@@ -11,6 +11,8 @@ var wave_active: bool = false
 var waiting_next: bool = false
 
 func _ready() -> void:
+	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+		return
 	GameManager.enemies_alive = 0
 	_start_wave(1)
 
@@ -25,6 +27,8 @@ func _start_wave(w: int) -> void:
 	waiting_next = false
 
 func _process(delta: float) -> void:
+	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+		return
 	if not wave_active:
 		return
 	if spawning_wave:
@@ -46,10 +50,6 @@ func _process(delta: float) -> void:
 				_start_wave(GameManager.wave + 1)
 
 func _spawn_one() -> void:
-	var enemy_scene = load("res://scenes/enemy.tscn")
-	if enemy_scene == null:
-		return
-	var e = enemy_scene.instantiate()
 	var w = GameManager.wave
 	var variant = 0
 	var r = randf()
@@ -59,10 +59,25 @@ func _spawn_one() -> void:
 		variant = 2
 	var angle = randf() * TAU
 	var pos = Vector3(cos(angle) * spawn_radius, 1.0, sin(angle) * spawn_radius)
-	var player = get_tree().get_first_node_in_group("player")
-	if player and pos.distance_to(player.global_position) < 8.0:
-		pos = -pos
-	get_tree().current_scene.add_child(e)
-	e.global_position = pos
-	e.setup(variant, w)
+	# avoid spawning too close to any player
+	for p in get_tree().get_nodes_in_group("player"):
+		if pos.distance_to(p.global_position) < 8.0:
+			pos = -pos
+	var enemy_spawner = null
+	var main = get_tree().current_scene
+	if main and main.has_node("EnemySpawner"):
+		enemy_spawner = main.get_node("EnemySpawner")
+	if enemy_spawner and multiplayer.has_multiplayer_peer():
+		enemy_spawner.spawn({"variant": variant, "pos": pos, "wave": w})
+	else:
+		var enemy_scene = load("res://scenes/enemy.tscn")
+		if enemy_scene == null:
+			return
+		var e = enemy_scene.instantiate()
+		if main and main.has_node("Enemies"):
+			main.get_node("Enemies").add_child(e)
+		else:
+			get_tree().current_scene.add_child(e)
+		e.position = pos
+		e.setup(variant, w)
 	GameManager.enemies_alive += 1

@@ -77,6 +77,11 @@ custom_minimum_size = Vector2(260, 56)
 size_flags_horizontal = 4
 text = "START GAME"
 
+[node name="MultiBtn" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(260, 48)
+size_flags_horizontal = 4
+text = "MULTIPLAYER"
+
 [node name="Hint" type="Label" parent="Center/VBox"]
 text = "Press ENTER or click to start"
 horizontal_alignment = 1
