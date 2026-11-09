@@ -34,6 +34,7 @@ func _ready() -> void:
 	mag_capacity = base_mag + GameManager.mag_bonus()
 	current_ammo = mag_capacity
 	reserve = mag_capacity * 4
+	_build_gun()
 	_sync_ammo()
 
 func _sync_ammo() -> void:
@@ -144,3 +145,161 @@ func _spawn_impact(pos: Vector3, normal: Vector3) -> void:
 	var tw = dot.create_tween()
 	tw.tween_property(dot, "scale", Vector3.ZERO, 0.25)
 	tw.tween_callback(dot.queue_free)
+
+func _mat(color: Color, metallic: float = 0.7, rough: float = 0.4) -> StandardMaterial3D:
+	var m = StandardMaterial3D.new()
+	m.albedo_color = color
+	m.metallic = metallic
+	m.roughness = rough
+	return m
+
+func _add_part(size: Vector3, pos: Vector3, color: Color, mesh_type: String = "box") -> MeshInstance3D:
+	var mi = MeshInstance3D.new()
+	var mesh
+	if mesh_type == "box":
+		var bm = BoxMesh.new()
+		bm.size = size
+		mesh = bm
+	elif mesh_type == "cyl":
+		var cm = CylinderMesh.new()
+		cm.top_radius = size.x
+		cm.bottom_radius = size.x
+		cm.height = size.y
+		mesh = cm
+	elif mesh_type == "sphere":
+		var sm = SphereMesh.new()
+		sm.radius = size.x
+		sm.height = size.y
+		mesh = sm
+	mi.mesh = mesh
+	mi.position = pos
+	mi.material_override = _mat(color)
+	add_child(mi)
+	return mi
+
+func _build_gun() -> void:
+	var accent = LoadoutManager.get_selected()["color"]
+	var metal = Color(0.18, 0.19, 0.22)
+	var dark = Color(0.1, 0.1, 0.12)
+	var wood = Color(0.35, 0.22, 0.12)
+
+	# clear existing children except muzzle? keep muzzle; remove other mesh children
+	for c in get_children():
+		if c.name != "Muzzle":
+			c.queue_free()
+
+	var id = LoadoutManager.selected
+
+	if id == "pistol":
+		# grip
+		_add_part(Vector3(0.04, 0.12, 0.06), Vector3(0, -0.06, 0.05), dark)
+		# frame
+		_add_part(Vector3(0.05, 0.05, 0.16), Vector3(0, 0.0, -0.02), metal)
+		# slide
+		_add_part(Vector3(0.045, 0.04, 0.18), Vector3(0, 0.03, -0.02), metal.lightened(0.05))
+		# barrel
+		_add_part(Vector3(0.012, 0.012, 0.06), Vector3(0, 0.03, -0.14), dark, "cyl")
+		# sights
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.06, -0.12), dark)
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.06, 0.06), dark)
+		# accent stripe
+		_add_part(Vector3(0.052, 0.005, 0.1), Vector3(0, 0.05, -0.02), accent)
+		if muzzle:
+			muzzle.position = Vector3(0, 0.03, -0.18)
+
+	elif id == "smg":
+		# stock (folded stub)
+		_add_part(Vector3(0.04, 0.04, 0.12), Vector3(0, -0.02, 0.12), metal)
+		# receiver
+		_add_part(Vector3(0.05, 0.05, 0.2), Vector3(0, 0.0, -0.05), metal)
+		# barrel
+		_add_part(Vector3(0.015, 0.015, 0.12), Vector3(0, 0.0, -0.2), dark, "cyl")
+		# muzzle brake
+		_add_part(Vector3(0.02, 0.02, 0.03), Vector3(0, 0.0, -0.27), dark, "cyl")
+		# grip
+		_add_part(Vector3(0.04, 0.1, 0.05), Vector3(0, -0.07, 0.02), dark)
+		# magazine (straight)
+		_add_part(Vector3(0.03, 0.12, 0.04), Vector3(0, -0.1, -0.02), dark)
+		# handguard
+		_add_part(Vector3(0.055, 0.04, 0.12), Vector3(0, -0.02, -0.12), metal.lightened(0.05))
+		# sights
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.04, -0.18), dark)
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.04, 0.08), dark)
+		# accent
+		_add_part(Vector3(0.052, 0.005, 0.15), Vector3(0, 0.03, -0.05), accent)
+		if muzzle:
+			muzzle.position = Vector3(0, 0.0, -0.3)
+
+	elif id == "shotgun":
+		# stock
+		_add_part(Vector3(0.05, 0.06, 0.22), Vector3(0, 0.0, 0.2), wood)
+		# receiver
+		_add_part(Vector3(0.06, 0.06, 0.14), Vector3(0, 0.0, 0.0), metal)
+		# barrel
+		_add_part(Vector3(0.02, 0.02, 0.32), Vector3(0, 0.02, -0.28), dark, "cyl")
+		# tube magazine
+		_add_part(Vector3(0.018, 0.018, 0.28), Vector3(0, -0.03, -0.22), dark, "cyl")
+		# pump grip
+		_add_part(Vector3(0.05, 0.04, 0.1), Vector3(0, -0.02, -0.15), wood)
+		# grip
+		_add_part(Vector3(0.04, 0.1, 0.05), Vector3(0, -0.08, 0.05), dark)
+		# sights
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.05, -0.2), dark)
+		# accent
+		_add_part(Vector3(0.062, 0.005, 0.1), Vector3(0, 0.04, 0.0), accent)
+		if muzzle:
+			muzzle.position = Vector3(0, 0.02, -0.45)
+
+	elif id == "sniper":
+		# stock
+		_add_part(Vector3(0.06, 0.07, 0.26), Vector3(0, -0.01, 0.22), wood)
+		# receiver
+		_add_part(Vector3(0.05, 0.05, 0.18), Vector3(0, 0.0, -0.02), metal)
+		# barrel (long)
+		_add_part(Vector3(0.014, 0.014, 0.45), Vector3(0, 0.02, -0.38), dark, "cyl")
+		# suppressor
+		_add_part(Vector3(0.022, 0.022, 0.12), Vector3(0, 0.02, -0.66), dark, "cyl")
+		# scope
+		_add_part(Vector3(0.025, 0.025, 0.16), Vector3(0, 0.07, -0.02), Color(0.08,0.08,0.1), "cyl")
+		# scope mounts
+		_add_part(Vector3(0.01, 0.03, 0.02), Vector3(-0.02, 0.05, -0.02), metal)
+		_add_part(Vector3(0.01, 0.03, 0.02), Vector3(0.02, 0.05, -0.02), metal)
+		# bolt handle
+		_add_part(Vector3(0.015, 0.015, 0.04), Vector3(0.04, 0.02, 0.02), metal, "cyl")
+		# magazine
+		_add_part(Vector3(0.03, 0.08, 0.04), Vector3(0, -0.08, -0.02), dark)
+		# bipod
+		_add_part(Vector3(0.01, 0.06, 0.01), Vector3(-0.03, -0.08, -0.25), metal)
+		_add_part(Vector3(0.01, 0.06, 0.01), Vector3(0.03, -0.08, -0.25), metal)
+		# grip
+		_add_part(Vector3(0.04, 0.1, 0.05), Vector3(0, -0.07, 0.08), dark)
+		# accent
+		_add_part(Vector3(0.052, 0.005, 0.12), Vector3(0, 0.04, -0.02), accent)
+		if muzzle:
+			muzzle.position = Vector3(0, 0.02, -0.72)
+
+	else: # rifle default
+		# stock
+		_add_part(Vector3(0.05, 0.06, 0.2), Vector3(0, 0.0, 0.18), metal)
+		# receiver
+		_add_part(Vector3(0.055, 0.055, 0.18), Vector3(0, 0.0, -0.04), metal)
+		# barrel
+		_add_part(Vector3(0.016, 0.016, 0.25), Vector3(0, 0.02, -0.25), dark, "cyl")
+		# muzzle brake
+		_add_part(Vector3(0.022, 0.022, 0.04), Vector3(0, 0.02, -0.39), dark, "cyl")
+		# handguard
+		_add_part(Vector3(0.06, 0.05, 0.18), Vector3(0, -0.01, -0.18), metal.lightened(0.05))
+		# grip
+		_add_part(Vector3(0.04, 0.1, 0.05), Vector3(0, -0.08, 0.02), dark)
+		# magazine (curved)
+		_add_part(Vector3(0.035, 0.12, 0.05), Vector3(0, -0.09, -0.02), dark)
+		_add_part(Vector3(0.03, 0.06, 0.04), Vector3(0, -0.14, 0.0), dark)
+		# sights
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.04, -0.2), dark)
+		_add_part(Vector3(0.01, 0.015, 0.01), Vector3(0, 0.04, 0.08), dark)
+		# carry handle / rail
+		_add_part(Vector3(0.02, 0.03, 0.12), Vector3(0, 0.05, -0.02), metal)
+		# accent
+		_add_part(Vector3(0.057, 0.005, 0.12), Vector3(0, 0.035, -0.04), accent)
+		if muzzle:
+			muzzle.position = Vector3(0, 0.02, -0.42)
