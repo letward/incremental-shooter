@@ -9,6 +9,17 @@ func _ready() -> void:
 	_style_button()
 	_animate_entrance()
 	start_btn.pressed.connect(_start_game)
+	_start_music()
+
+func _start_music() -> void:
+	var stream = load("res://assets/music/lobby.wav")
+	if stream is AudioStreamWAV:
+		stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	var player = AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = -10.0
+	add_child(player)
+	player.play()
 
 func _style_button() -> void:
 	var sb = StyleBoxFlat.new()

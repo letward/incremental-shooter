@@ -12,6 +12,17 @@ func _ready() -> void:
 	_build_list()
 	_select(LoadoutManager.selected)
 	confirm_btn.pressed.connect(_confirm)
+	_start_music()
+
+func _start_music() -> void:
+	var stream = load("res://assets/music/lobby.wav")
+	if stream is AudioStreamWAV:
+		stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	var player = AudioStreamPlayer.new()
+	player.stream = stream
+	player.volume_db = -10.0
+	add_child(player)
+	player.play()
 
 func _style_confirm() -> void:
 	var sb = StyleBoxFlat.new()
