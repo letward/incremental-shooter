@@ -71,4 +71,7 @@ func _confirm() -> void:
 	AudioManager.play("ui_click")
 	var tw = create_tween()
 	tw.tween_property(self, "modulate:a", 0.0, 0.25)
-	tw.tween_callback(func(): get_tree().change_scene_to_file("res://scenes/main.tscn"))
+	tw.tween_callback(_go_to_game)
+
+func _go_to_game() -> void:
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
