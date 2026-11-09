@@ -1,0 +1,101 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Crosshair" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+
+[node name="H" type="ColorRect" parent="Crosshair"]
+offset_left = 8.0
+offset_top = 9.0
+offset_right = 12.0
+offset_bottom = 11.0
+color = Color(1, 1, 1, 0.85)
+
+[node name="V" type="ColorRect" parent="Crosshair"]
+offset_left = 9.0
+offset_top = 8.0
+offset_right = 11.0
+offset_bottom = 12.0
+color = Color(1, 1, 1, 0.85)
+
+[node name="TopLeft" type="VBoxContainer" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 320.0
+offset_bottom = 120.0
+
+[node name="HealthLabel" type="Label" parent="TopLeft"]
+text = "Health"
+theme_override_font_sizes/font_size = 14
+
+[node name="HealthBar" type="ProgressBar" parent="TopLeft"]
+custom_minimum_size = Vector2(260, 22)
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="AmmoLabel" type="Label" parent="TopLeft"]
+text = "Ammo: 30 / 90"
+theme_override_font_sizes/font_size = 16
+
+[node name="TopRight" type="VBoxContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -260.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 120.0
+
+[node name="MoneyLabel" type="Label" parent="TopRight"]
+text = "Money: $0"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="KillsLabel" type="Label" parent="TopRight"]
+text = "Kills: 0"
+horizontal_alignment = 2
+
+[node name="WaveLabel" type="Label" parent="TopRight"]
+text = "Wave: 1"
+horizontal_alignment = 2
+
+[node name="Bottom" type="HBoxContainer" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -40.0
+offset_right = 600.0
+offset_bottom = -8.0
+
+[node name="HintLabel" type="Label" parent="Bottom"]
+text = "WASD move | Mouse look | LMB shoot | R reload | Tab upgrades | E interact | Esc cursor"
+
+[node name="DamageFlash" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(1, 0.1, 0.1, 0.35)
+modulate = Color(1, 1, 1, 0)
+
+[node name="MsgLabel" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.3
+anchor_right = 0.5
+anchor_bottom = 0.3
+offset_left = -260.0
+offset_top = -30.0
+offset_right = 260.0
+offset_bottom = 30.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+modulate = Color(1, 1, 1, 0)
