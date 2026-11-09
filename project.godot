@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 Bootstrap="*res://scripts/bootstrap.gd"
 GameManager="*res://scripts/game_manager.gd"
 AudioManager="*res://scripts/audio_manager.gd"
+LoadoutManager="*res://scripts/loadout_manager.gd"
 
 [display]
 

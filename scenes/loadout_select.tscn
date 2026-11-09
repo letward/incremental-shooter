@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/loadout_select.gd" id="1"]
+
+[node name="LoadoutSelect" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="BG" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.04, 0.05, 0.09, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+custom_minimum_size = Vector2(720, 0)
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/VBox"]
+text = "SELECT LOADOUT"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.2, 0.8, 1.0, 1)
+
+[node name="Subtitle" type="Label" parent="Center/VBox"]
+text = "Choose your weapon before deployment"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+
+[node name="List" type="VBoxContainer" parent="Center/VBox"]
+theme_override_constants/separation = 8
+
+[node name="Info" type="PanelContainer" parent="Center/VBox"]
+custom_minimum_size = Vector2(0, 120)
+
+[node name="InfoLabel" type="Label" parent="Center/VBox/Info"]
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="ConfirmBtn" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(260, 52)
+size_flags_horizontal = 4
+text = "CONFIRM & DEPLOY"

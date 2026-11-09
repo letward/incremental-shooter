@@ -57,4 +57,4 @@ func _start_game() -> void:
 	tw.tween_callback(_go_to_game)
 
 func _go_to_game() -> void:
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file("res://scenes/loadout_select.tscn")

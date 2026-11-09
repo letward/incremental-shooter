@@ -86,8 +86,8 @@ func max_health() -> float:
 func move_speed() -> float:
 	return 5.0 + upgrades["move_speed"]["level"] * upgrades["move_speed"]["step"]
 
-func mag_size() -> int:
-	return 30 + upgrades["mag_size"]["level"] * upgrades["mag_size"]["step"]
+func mag_bonus() -> int:
+	return upgrades["mag_size"]["level"] * int(upgrades["mag_size"]["step"])
 
 func reload_time() -> float:
 	var base = 1.6
